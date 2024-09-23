@@ -1,2 +1,1 @@
-# hashinglineal
-Inserción en Hashing Lineal
+# Inserción en Hashing Lineal
