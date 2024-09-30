@@ -5,10 +5,10 @@
 
 using namespace std;
 
-#define element long long
 #define uint unsigned long long
+#define element long long
 
-int PAGE_SIZE = 1024; // tamaño máximo de una página
+int MAX_PAGE_SIZE = 128; // cantidad máxima de elementos en una página
 
 /* Función de hashing: devuelve valor aleatorio entre 0 y 2^64 - 1 para cualquier y */
 uint h(int y) {
@@ -20,18 +20,18 @@ uint h(int y) {
 
 /* Página: Lista de elementos que tiene como máximo 1024 bytes */
 struct Page {
-    vector<int> elements; // lista de elementos
-    uint size; // espacio utilizado
+    vector<element> elements; // lista de elementos de 64 bits
+    int n; // cantidad de elementos en la página
     Page *overflow; // puntero a la página de desborde
 
-    Page() : size(0), overflow(nullptr) {}; // inicializar una página vacía
+    Page() : n(0), overflow(nullptr) {}; // inicializar una página vacía
 
     // insertar un elemento en la página actual
     void insert(element y) {
-        // verificar si hay espacio para más elementos
-        if (size + sizeof(y) <= PAGE_SIZE) {
+        // verificar si hay espacio para otro elemento
+        if (n + 1 <= MAX_PAGE_SIZE) {
             elements.push_back(y);
-            size += sizeof(y);
+            n++;
         } else {
             // si no hay espacio, se inserta en la página de desborde
             if (overflow == nullptr) {
