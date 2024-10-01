@@ -39,6 +39,20 @@ struct Page {
             overflow->insert(y);
         }
     }
+
+    // mostrar contenido de la página y sus desbordes
+    void display_page() const {
+        cout << "Elementos en la página: ";
+        for (auto& e : elements) {
+            cout << e << " ";
+        }
+        cout << endl;
+
+        if (overflow != nullptr) {
+            cout << "Desbordes: " << endl;
+            overflow->display_page(); // mostrar la página de desborde
+        }
+    }
 };
 
 /* Tabla de hashing: Lista indexada por el valor entregado por la función de hash */
@@ -53,6 +67,19 @@ struct HashTable {
     ~HashTable() {
         for (Page *page : table) {
             delete page;
+        }
+    }
+
+    // mostrar contenido de la tabla de hashing
+    void display_table() const {
+        cout << "Contenido de la tabla de hash: " << endl;
+        for (size_t i = 0; i < table.size(); ++i) {
+            if (table[i] != nullptr) {
+                cout << "Página " << i << ":" << endl;
+                table[i]->display_page(); // Mostrar el contenido de la página
+            } else {
+                cout << "Página " << i << ": vacía" << endl;
+            }
         }
     }
 };
