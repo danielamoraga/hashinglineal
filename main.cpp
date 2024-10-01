@@ -6,24 +6,24 @@ int main() {
     HashTable H;
     max_accesses = 3; // cantidad de accesos permitidos antes de expandir
 
-    // insertar elementos en la tabla de hashing
+    // Test 1: Inserciones simples sin desbordes
     cout << "Test 1: Inserciones simples sin desbordes" << endl;
     for (int i = 0; i < 5; ++i) {
-        insert(i, H);
+        insertion(i, H); // Usar la función insert del archivo insertion.cpp
     }
     H.display_table();
 
     // Test 2: Inserciones con desbordes
-    cout << "\nTest 2: Inserciones con desbordes" << endl;
+    cout << "\n\nTest 2: Inserciones con desbordes" << endl;
     for (int i = 5; i < 150; ++i) {
-        insert(i, H); // Insertar en la tabla de hash, se debe generar desbordes
+        insertion(i, H); // Insertar en la tabla de hash, se debe generar desbordes
     }
     H.display_table();
 
     // Test 3: Expansión automática de la tabla
-    cout << "\nTest 3: Expansión automática de la tabla" << endl;
+    cout << "\n\nTest 3: Expansión automática de la tabla" << endl;
     for (int i = 150; i < 300; ++i) {
-        insert(i, H); // Insertar y expandir automáticamente si es necesario
+        insertion(i, H); // Insertar y expandir automáticamente si es necesario
     }
     H.display_table();
 
