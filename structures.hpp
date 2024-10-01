@@ -11,9 +11,8 @@ using namespace std;
 int MAX_PAGE_SIZE = 128; // cantidad máxima de elementos en una página
 
 /* Función de hashing: devuelve valor aleatorio entre 0 y 2^64 - 1 para cualquier y */
-uint h(int y) {
-    random_device rd;
-    mt19937 gen(rd());
+uint h(element y) {
+    mt19937 gen(y);
     uniform_int_distribution<uint> dis(0, UINT64_MAX);
     return dis(gen);
 };
@@ -46,8 +45,8 @@ struct Page {
 struct HashTable {
     vector<Page*> table; // vector de listas de páginas (donde las listas de rebalse son páginas con un puntero a su rebalse)
 
-    HashTable(int initial_size) {
-        table.resize(initial_size, nullptr); // inicializar tabla de hashing con páginas vacías
+    HashTable() {
+        table.resize(1, nullptr); // inicializar tabla de hashing con páginas vacías
     }
 
     // liberar memoria ocupada por las páginas y sus desbordes
