@@ -22,7 +22,7 @@ int main() {
     // generar secuencia de N números de 64 bits |N| pertenece a {2^10, 2^11, 2^12,...,2^24}
     srand(time(0));
     //for (int i = 10; i <= 24; ++i) {
-        uint N = 1 << 18;
+        uint N = 1 << 10;
         vector<element> secuencia = generar_secuencia(N);
         cout << "Generando secuencia de tamaño " << N << endl;
 

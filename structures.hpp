@@ -82,7 +82,7 @@ struct HashTable {
             }
         }
     }
-    
+
     double porcentaje_llenado() const {
         int total = 0;
         int ocupado = 0;

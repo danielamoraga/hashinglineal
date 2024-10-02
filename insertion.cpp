@@ -8,7 +8,7 @@ int c_max;
 /* Insertar elemento en la tabla de hashing */
 void insertion(element y, HashTable& H) {
 
-    int k = h(y) % (1 << (t + 1));; // índice página k
+    int k = h(y) % (1 << (t + 1)); // índice página k
 
     if (k < p) {
         // insertar en la página k
@@ -33,8 +33,20 @@ void insertion(element y, HashTable& H) {
         // o en una nueva página si la actual se rebalsa (eso lo hace insert de Page)
     } else { // k >= p, significa que la página k aún no ha sido creada
         // se inserta en la página k - 2^t
-        if (H.table[k - (1 << t)] == nullptr) {
+        accesses = 1;
+        Page* page = H.table[k - (1 << t)];
+        if (page == nullptr) {
             H.table[k - (1 << t)] = new Page(); // Inicializar la página si es necesario
+            page = H.table[k - (1 << t)];
+        }
+        while(page != nullptr) {
+            for (element e : page->elements) {
+                if (e == y) {
+                    return; // elemento ya existe en la página, no se inserta
+                }
+            }
+            page = page->overflow;
+            if (page != nullptr) accesses++; // acceso a página de desborde
         }
         H.table[k - (1 << t)]->insert(y);
     }
