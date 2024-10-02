@@ -3,10 +3,9 @@
 int p = 1; // cantidad de páginas del archivo
 int t = 0;
 int accesses = 0;
-int max_accesses;
 
 /* Insertar elemento en la tabla de hashing */
-void insertion(element y, HashTable& H) {
+void insertion(element y, HashTable& H, int c_max) {
 
     int k = h(y) % (1 << (t + 1));; // índice página k
 
@@ -39,7 +38,7 @@ void insertion(element y, HashTable& H) {
         H.table[k - (1 << t)]->insert(y);
     }
 
-    if (accesses > max_accesses) {
+    if (accesses > c_max) {
         expand(H, p, t); // se expande la siguiente página p - 2^t
     }
 }
