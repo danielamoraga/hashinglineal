@@ -9,9 +9,6 @@ int max_accesses;
 void insertion(element y, HashTable& H) {
 
     int k = h(y) % (1 << (t + 1));; // índice página k
-    cout << "Función de hash: " << h(y) << endl;
-    cout << "Página: " << k << endl;
-    cout << "Intentando insertar: " << y << " en la página: " << k << endl;
 
     if (k < p) {
         // insertar en la página k
@@ -25,7 +22,6 @@ void insertion(element y, HashTable& H) {
         while(page != nullptr) {
             for (element e : page->elements) {
                 if (e == y) {
-                    cout << "Elemento ya existe: " << y << endl;
                     return; // elemento ya existe en la página, no se inserta
                 }
             }
@@ -37,7 +33,6 @@ void insertion(element y, HashTable& H) {
         // o en una nueva página si la actual se rebalsa (eso lo hace insert de Page)
     } else { // k >= p, significa que la página k aún no ha sido creada
         // se inserta en la página k - 2^t
-        cout << "Página no existe, insertando en página: " << k - (1 << t) << endl;
         if (H.table[k - (1 << t)] == nullptr) {
             H.table[k - (1 << t)] = new Page(); // Inicializar la página si es necesario
         }

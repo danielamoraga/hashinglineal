@@ -82,4 +82,21 @@ struct HashTable {
             }
         }
     }
+    double porcentaje_llenado() const {
+        int total = 0;
+        int ocupado = 0;
+        for (Page* page : table) {
+            if (page != nullptr) {
+                total++;
+                ocupado += page->n;
+                while (page->overflow != nullptr) {
+                    page = page->overflow;
+                    total++;
+                    ocupado += page->n;
+                }
+            }
+        }
+        if (total == 0) return 0.0;
+        return (double) ocupado / (total * MAX_PAGE_SIZE);
+    }
 };
