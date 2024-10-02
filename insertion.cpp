@@ -3,9 +3,10 @@
 int p = 1; // cantidad de páginas del archivo
 int t = 0;
 int accesses = 0;
+int c_max;
 
 /* Insertar elemento en la tabla de hashing */
-void insertion(element y, HashTable& H, int c_max) {
+void insertion(element y, HashTable& H) {
 
     int k = h(y) % (1 << (t + 1));; // índice página k
 
