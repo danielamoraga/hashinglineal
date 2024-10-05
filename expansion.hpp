@@ -60,6 +60,7 @@ void expand(HashTable& H, int& p, int& t) {
                 if (new_page->overflow == nullptr) break;
             } else {
                 next->elements = remaining; // actualizamos los elementos de la pág de rebalse
+                next->n = remaining.size(); // actualizamos el contador
                 break;
             }
             new_page = new_page->overflow;

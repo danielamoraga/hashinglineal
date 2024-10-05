@@ -17,11 +17,14 @@ vector<element> generar_secuencia(int n) {
 
 int main() {
     // experimentación
-    c_max = 5; // cantidad máxima de accesos antes de expandir
 
     // generar secuencia de N números de 64 bits |N| pertenece a {2^10, 2^11, 2^12,...,2^24}
     srand(time(0));
+    for (int j = 1; j<= 5 ; j++) {
     //for (int i = 10; i <= 24; ++i) {
+    
+        c_max = j; // cantidad máxima de accesos antes de expandir
+
         uint N = 1 << 10;
         vector<element> secuencia = generar_secuencia(N);
         cout << "Generando secuencia de tamaño " << N << endl;
@@ -52,5 +55,6 @@ int main() {
         cout << "Porcentaje de llenado de las páginas: " << llenado << "%" << endl;
         
     //}
+    }
     return 0;
 }
