@@ -20,41 +20,42 @@ int main() {
 
     // generar secuencia de N números de 64 bits |N| pertenece a {2^10, 2^11, 2^12,...,2^24}
     srand(time(0));
-    for (int j = 1; j<= 5 ; j++) {
-    //for (int i = 10; i <= 24; ++i) {
-    
-        c_max = j; // cantidad máxima de accesos antes de expandir
+    for (int i = 10; i <= 24; ++i) {
 
-        uint N = 1 << 10;
+        uint N = 1 << i;
         vector<element> secuencia = generar_secuencia(N);
         cout << "Generando secuencia de tamaño " << N << endl;
 
-        // crear tabla de hashing con espacio inicial 1
-        HashTable H;
+        for (int c = 1; c <= 5; c++) {
+            c_max = c;
+            
+            // crear tabla de hashing con espacio inicial 1
+            HashTable H;
 
-        int inserciones = 0;
-        int ios = 0;
-        auto start = chrono::high_resolution_clock::now(); // cronómetro
+            int inserciones = 0;
+            int ios = 0;
+            auto start = chrono::high_resolution_clock::now(); // cronómetro
 
-        // insertar cada número en la tabla de hash
-        for (element e : secuencia) {
-            insertion(e, H);
-            inserciones++;
-            ios += accesses;
+            // insertar cada número en la tabla de hash
+            for (element e : secuencia) {
+                insertion(e, H);
+                inserciones++;
+                ios += accesses;
+            }
+
+            auto end = chrono::high_resolution_clock::now(); // terminar cronómetro
+            chrono::duration<double> tiempo = end - start;
+
+            double costo_promedio = static_cast<double>(ios) / inserciones;
+            double llenado = H.porcentaje_llenado();
+
+            cout << "Resultados para  N = 2^" << i << ":" << endl;
+            cout << "Cantidad de I/Os: " << ios << endl;
+            cout << "Costo promedio de inserción (I/Os): " << costo_promedio << endl;
+            cout << "Tiempo total de inserción: " << tiempo.count() << " segundos" << endl;
+            cout << "Porcentaje de llenado de las páginas: " << llenado << "%" << endl;
+            
         }
-
-        auto end = chrono::high_resolution_clock::now(); // terminar cronómetro
-        chrono::duration<double> tiempo = end - start;
-
-        double costo_promedio = static_cast<double>(ios) / inserciones;
-        double llenado = H.porcentaje_llenado();
-
-        cout << "Resultados para N = " << N << ":" << endl;
-        cout << "Costo promedio de inserción (I/Os): " << costo_promedio << endl;
-        cout << "Tiempo total de inserción: " << tiempo.count() << " segundos" << endl;
-        cout << "Porcentaje de llenado de las páginas: " << llenado << "%" << endl;
-        
-    //}
     }
     return 0;
 }

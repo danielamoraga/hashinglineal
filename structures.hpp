@@ -20,10 +20,8 @@ uint h(element y) {
 /* Página: Lista de elementos que tiene como máximo 1024 bytes */
 struct Page {
     vector<element> elements; // lista de elementos de 64 bits
-    int n; // cantidad de elementos en la página
-    Page *overflow; // puntero a la página de desborde
-
-    Page() : n(0), overflow(nullptr) {}; // inicializar una página vacía
+    int n = 0; // cantidad de elementos en la página
+    Page *overflow = nullptr; // puntero a la página de desborde
 
     // insertar un elemento en la página actual
     void insert(element y) {
@@ -60,14 +58,7 @@ struct HashTable {
     vector<Page*> table; // vector de listas de páginas (donde las listas de rebalse son páginas con un puntero a su rebalse)
 
     HashTable() {
-        table.resize(1, nullptr); // inicializar tabla de hashing con páginas vacías
-    }
-
-    // liberar memoria ocupada por las páginas y sus desbordes
-    ~HashTable() {
-        for (Page *page : table) {
-            delete page;
-        }
+        table.push_back(new Page()); // inicializar con una página
     }
 
     // mostrar contenido de la tabla de hashing
