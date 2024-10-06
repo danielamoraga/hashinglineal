@@ -1,10 +1,9 @@
 #include "structures.hpp"
 
 void expand(HashTable& H, int& p, int& t) {
-
     // Duplicar el tamaño de la tabla
     H.table.push_back(make_unique<Page>());
-    
+
     // Evitar la expansión repetida del mismo índice
     if (H.table[p] && H.table[p]->elements.size() == 0) {
         return;

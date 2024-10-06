@@ -1,15 +1,15 @@
+#include <climits>
 #include <iostream>
+#include <memory>
 #include <random>
 #include <vector>
-#include <climits>
-#include <memory>
 
 using namespace std;
 
 #define uint unsigned long long
 #define element long long
 
-int MAX_PAGE_SIZE = 128; // cantidad máxima de elementos en una página
+int MAX_PAGE_SIZE = 128;  // cantidad máxima de elementos en una página
 
 /* Función de hashing: devuelve valor aleatorio entre 0 y 2^64 - 1 para cualquier y */
 uint h(element y) {
@@ -20,11 +20,11 @@ uint h(element y) {
 
 /* Página: Lista de elementos que tiene como máximo 1024 bytes */
 struct Page {
-    vector<element> elements; // lista de elementos de 64 bits
-    int n; // cantidad de elementos en la página
-    unique_ptr<Page> overflow; // puntero a la página de desborde
+    vector<element> elements;   // lista de elementos de 64 bits
+    int n;                      // cantidad de elementos en la página
+    unique_ptr<Page> overflow;  // puntero a la página de desborde
 
-    Page() : n(0), overflow(nullptr) {}; // inicializar una página vacía
+    Page() : n(0), overflow(nullptr) {};  // inicializar una página vacía
 
     // insertar un elemento en la página actual
     void insert(const element& y) {
@@ -49,17 +49,17 @@ struct Page {
 
         if (overflow) {
             cout << "Desbordes: " << endl;
-            overflow->display_page(); // mostrar la página de desborde
+            overflow->display_page();  // mostrar la página de desborde
         }
     }
 };
 
 /* Tabla de hashing: Lista indexada por el valor entregado por la función de hash */
 struct HashTable {
-    vector<unique_ptr<Page>> table; // vector de listas de páginas (donde las listas de rebalse son páginas con un puntero a su rebalse)
+    vector<unique_ptr<Page>> table;  // vector de listas de páginas (donde las listas de rebalse son páginas con un puntero a su rebalse)
 
     HashTable() {
-        table.resize(1); // inicializar tabla de hashing con páginas vacías
+        table.resize(1);  // inicializar tabla de hashing con páginas vacías
     }
 
     // mostrar contenido de la tabla de hashing
@@ -68,7 +68,7 @@ struct HashTable {
         for (size_t i = 0; i < table.size(); ++i) {
             if (table[i]) {
                 cout << "Página " << i << ":" << endl;
-                table[i]->display_page(); // Mostrar el contenido de la página
+                table[i]->display_page();  // Mostrar el contenido de la página
             } else {
                 cout << "Página " << i << ": vacía" << endl;
             }
@@ -86,7 +86,7 @@ struct HashTable {
                 while (overflow_page) {
                     total++;
                     ocupado += overflow_page->n;
-                    overflow_page = overflow_page->overflow.get(); 
+                    overflow_page = overflow_page->overflow.get();
                 }
             }
         }
