@@ -1,7 +1,5 @@
 # Tarea 1: Inserción en Hashing Lineal
 
-# Proyecto de Experimentación - Tarea 1
-
 ## Descripción
 
 Este proyecto implementa una tabla de hash con expansión lineal y realiza experimentos variando el valor de `c_max` para observar su impacto en el rendimiento. La tabla de hash se expande cuando se excede el número máximo de accesos a una página (`c_max`). El experimento inserta diferentes cantidades de elementos en la tabla y registra métricas como el costo promedio de I/O, el tiempo de inserción y el porcentaje de llenado de la tabla.
