@@ -1,71 +1,66 @@
 #include "structures.hpp"
 
 void expand(HashTable& H, int& p, int& t) {
-    // duplicar el tamaño de la tabla a 2^(t + 1)
-    H.table.push_back(new Page());
 
-    // se expande la siguiente página p - 2^t
-    int i = p - (1 << t); // indice de la página a expandir
+    // Duplicar el tamaño de la tabla
+    H.table.push_back(make_unique<Page>());
+    
+    // Evitar la expansión repetida del mismo índice
+    if (H.table[p] && H.table[p]->elements.size() == 0) {
+        return;
+    }
 
-    Page* old_page = H.table[i]; // página a expandir
-    vector<element> all; // todos los elementos de la página y sus desbordes
+    // Página a expandir
+    int i = p - (1 << t);
+    unique_ptr<Page>& old_page = H.table[i];
+    vector<element> all;
 
-    // se recorre la página junto con las de desborde
-    Page* current = old_page;
-    while(current != nullptr) {
+    // Recorre la página y las de desborde
+    Page* current = old_page.get();
+    while (current != nullptr) {
         for (element y : current->elements) {
             all.push_back(y);
         }
-        current = current->overflow;
+        current = current->overflow.get();
     }
 
-    old_page->elements.clear(); // limpiar la página a expandir
+    // Limpiar la página antigua
+    old_page->elements.clear();
     old_page->n = 0;
 
-    // redistribuir elementos
+    // Redistribuir los elementos
     for (element y : all) {
-        int hash = h(y) % (1 << (t + 1)); // los elementos y se insertan en la página h(y) % (2^(t + 1))
-        // se reparten los elementos en las páginas p - 2^t y p (al final del archivo)
+        int hash = h(y) % (1 << (t + 1));  // Rehash with expanded table size
         if (hash == p) {
-            if (H.table[p] == nullptr) {
-                H.table[p] = new Page(); // inicializar la página si es necesario
+            if (!H.table[p]) {
+                H.table[p] = make_unique<Page>();  // Initialize if needed
             }
-            H.table[p]->insert(y); // insertar en la nueva página
+            std::cout << "Inserting element in expanded page at " << p << std::endl;
+            H.table[p]->insert(y);
         } else {
-            H.table[i]->insert(y); // insertar en la página p - 2^t
+            std::cout << "Inserting element in page at " << i << std::endl;
+            H.table[i]->insert(y);
         }
     }
 
-    // se compactan los elementos que quedaron en la página p - 2^t
-    // y se eliminan páginas de rebalse innecesarias
-    Page* new_page = H.table[i];
+    // Compactar las páginas de desborde
+    unique_ptr<Page>& new_page = H.table[i];
     if (new_page != nullptr) {
         while (new_page->overflow != nullptr) {
-            Page* next = new_page->overflow;
+            Page* next = new_page->overflow.get();
             vector<element> remaining;
-            // intentamos mover los elementos de la página de rebalse a la actual
             for (element y : next->elements) {
                 if (new_page->n + 1 <= MAX_PAGE_SIZE) {
-                    new_page->elements.push_back(y); // mover elemento a la pág actual
-                    new_page->n++; // actualizar contador
-                    next->n--; // actualizar contador
+                    new_page->elements.push_back(y);
+                    new_page->n++;
                 } else {
-                    remaining.push_back(y); // si no cabe, se deja en la pág de rebalse
+                    remaining.push_back(y);
                 }
             }
-            if (remaining.empty()) {
-                // si la pág de rebalse queda vacía la eliminamos
-                new_page->overflow = next->overflow;
-                delete next;
-                if (new_page->overflow == nullptr) break;
-            } else {
-                next->elements = remaining; // actualizamos los elementos de la pág de rebalse
-                next->n = remaining.size(); // actualizamos el contador
-                break;
-            }
-            new_page = new_page->overflow;
+            // Ensure overflow cleanup
+            new_page->overflow.reset();
+            std::cout << "Overflow cleaned up for page at " << i << std::endl;
         }
     }
-    p++;
-    if (p == (1 << (t + 1))) t++;
+    std::cout << "Expansion complete for page " << p << std::endl;
 }

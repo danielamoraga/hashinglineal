@@ -20,14 +20,14 @@ int main() {
 
     // generar secuencia de N números de 64 bits |N| pertenece a {2^10, 2^11, 2^12,...,2^24}
     srand(time(0));
-    for (int j = 1; j<= 5 ; j++) {
-    //for (int i = 10; i <= 24; ++i) {
+    for (int i = 10; i <= 24; ++i) {
     
-        c_max = j; // cantidad máxima de accesos antes de expandir
 
-        uint N = 1 << 10;
+        uint N = 1 << i;
         vector<element> secuencia = generar_secuencia(N);
         cout << "Generando secuencia de tamaño " << N << endl;
+    for (int j = 1; j<= 5 ; j++) {
+        c_max = j; // cantidad máxima de accesos antes de expandir
 
         // crear tabla de hashing con espacio inicial 1
         HashTable H;
@@ -41,6 +41,9 @@ int main() {
             insertion(e, H);
             inserciones++;
             ios += accesses;
+
+            
+
         }
 
         auto end = chrono::high_resolution_clock::now(); // terminar cronómetro
@@ -49,12 +52,12 @@ int main() {
         double costo_promedio = static_cast<double>(ios) / inserciones;
         double llenado = H.porcentaje_llenado();
 
-        cout << "Resultados para N = " << N << ":" << endl;
+        cout << "Resultados para N = 2^" << i << ":" << endl;
         cout << "Costo promedio de inserción (I/Os): " << costo_promedio << endl;
         cout << "Tiempo total de inserción: " << tiempo.count() << " segundos" << endl;
         cout << "Porcentaje de llenado de las páginas: " << llenado << "%" << endl;
         
-    //}
+    }
     }
     return 0;
 }

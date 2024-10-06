@@ -2,6 +2,7 @@
 #include <random>
 #include <vector>
 #include <climits>
+#include <memory>
 
 using namespace std;
 
@@ -21,21 +22,19 @@ uint h(element y) {
 struct Page {
     vector<element> elements; // lista de elementos de 64 bits
     int n; // cantidad de elementos en la página
-    Page *overflow; // puntero a la página de desborde
+    unique_ptr<Page> overflow; // puntero a la página de desborde
 
     Page() : n(0), overflow(nullptr) {}; // inicializar una página vacía
 
     // insertar un elemento en la página actual
-    void insert(element y) {
-        // verificar si hay espacio para otro elemento
-        if (n + 1 <= MAX_PAGE_SIZE) {
+    void insert(const element& y) {
+        if (n < MAX_PAGE_SIZE) {
             elements.push_back(y);
             n++;
+        } else if (!overflow) {
+            overflow = make_unique<Page>();
+            overflow->insert(y);
         } else {
-            // si no hay espacio, se inserta en la página de desborde
-            if (overflow == nullptr) {
-                overflow = new Page();
-            }
             overflow->insert(y);
         }
     }
@@ -48,7 +47,7 @@ struct Page {
         }
         cout << endl;
 
-        if (overflow != nullptr) {
+        if (overflow) {
             cout << "Desbordes: " << endl;
             overflow->display_page(); // mostrar la página de desborde
         }
@@ -57,24 +56,17 @@ struct Page {
 
 /* Tabla de hashing: Lista indexada por el valor entregado por la función de hash */
 struct HashTable {
-    vector<Page*> table; // vector de listas de páginas (donde las listas de rebalse son páginas con un puntero a su rebalse)
+    vector<unique_ptr<Page>> table; // vector de listas de páginas (donde las listas de rebalse son páginas con un puntero a su rebalse)
 
     HashTable() {
-        table.resize(1, nullptr); // inicializar tabla de hashing con páginas vacías
-    }
-
-    // liberar memoria ocupada por las páginas y sus desbordes
-    ~HashTable() {
-        for (Page *page : table) {
-            delete page;
-        }
+        table.resize(1); // inicializar tabla de hashing con páginas vacías
     }
 
     // mostrar contenido de la tabla de hashing
     void display_table() const {
         cout << "Contenido de la tabla de hash: " << endl;
         for (size_t i = 0; i < table.size(); ++i) {
-            if (table[i] != nullptr) {
+            if (table[i]) {
                 cout << "Página " << i << ":" << endl;
                 table[i]->display_page(); // Mostrar el contenido de la página
             } else {
@@ -86,18 +78,19 @@ struct HashTable {
     double porcentaje_llenado() const {
         int total = 0;
         int ocupado = 0;
-        for (Page* page : table) {
-            if (page != nullptr) {
+        for (auto& page : table) {
+            if (page) {
                 total++;
                 ocupado += page->n;
-                while (page->overflow != nullptr) {
-                    page = page->overflow;
+                auto* overflow_page = page->overflow.get();
+                while (overflow_page) {
                     total++;
-                    ocupado += page->n;
+                    ocupado += overflow_page->n;
+                    overflow_page = overflow_page->overflow.get(); 
                 }
             }
         }
         if (total == 0) return 0.0;
-        return (double) ocupado / (total * MAX_PAGE_SIZE);
+        return static_cast<double>(ocupado) / (total * MAX_PAGE_SIZE);
     }
 };
