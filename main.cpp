@@ -1,4 +1,5 @@
 #include <chrono>
+#include <fstream>  // For file I/O
 
 #include "insertion.cpp"
 
@@ -18,13 +19,15 @@ vector<element> generar_secuencia(int n) {
 
 int main() {
     // experimentación
+    ofstream csv_file("experiment_data.csv");
+    csv_file << "N,c_max,costo_promedio_ios,tiempo_insercion,porcentaje_llenado\n";  // CSV header
 
-    // generar secuencia de N números de 64 bits |N| pertenece a {2^10, 2^11, 2^12,...,2^24}
     srand(time(0));
     for (int i = 10; i <= 24; ++i) {
         uint N = 1 << i;
+        // generar secuencia de N números de 64 bits |N| pertenece a {2^10, 2^11, 2^12,...,2^24}
         vector<element> secuencia = generar_secuencia(N);
-        cout << "Generando secuencia de tamaño " << N << endl;
+        cout << "Procesando secuencia de tamaño N = 2^" << i << " (" << N << " elementos)" << endl;
         for (int j = 1; j <= 5; j++) {
             c_max = j;  // cantidad máxima de accesos antes de expandir
 
@@ -48,11 +51,12 @@ int main() {
             double costo_promedio = static_cast<double>(ios) / inserciones;
             double llenado = H.porcentaje_llenado();
 
-            cout << "Resultados para N = 2^" << i << ":" << endl;
-            cout << "Costo promedio de inserción (I/Os): " << costo_promedio << endl;
-            cout << "Tiempo total de inserción: " << tiempo.count() << " segundos" << endl;
-            cout << "Porcentaje de llenado de las páginas: " << llenado << "%" << endl;
+            cout << "Terminado N = 2^" << i << ", c_max = " << j << endl;
+
+            // Write data to CSV
+            csv_file << N << "," << c_max << "," << costo_promedio << "," << tiempo.count() << "," << llenado << "\n";
         }
     }
+    csv_file.close();
     return 0;
 }
