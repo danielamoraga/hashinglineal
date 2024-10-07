@@ -1,4 +1,4 @@
-#include "insertion.cpp"
+#include "structures.cpp"
 #include <chrono>
 
 // Función para generar un número aleatorio de 64 bits
@@ -6,17 +6,16 @@ element numero_aleatorio_64bits() {
     return (((element) rand() << 32) | rand());  // Combina dos llamadas de rand() para generar 64 bits
 }
 
-// Función para generar una secuencia de 'n' números aleatorios de 64 bits
-vector<element> generar_secuencia(int n) {
+// Función para generar una secuencia de 'N' números aleatorios de 64 bits
+vector<element> generar_secuencia(uint N) {
     vector<element> secuencia;
-    for (int i = 0; i < n; ++i) {
+    for (uint i = 0; i < N; i++) {
         secuencia.push_back(numero_aleatorio_64bits());
     }
     return secuencia;
 }
 
 int main() {
-    // experimentación
 
     // generar secuencia de N números de 64 bits |N| pertenece a {2^10, 2^11, 2^12,...,2^24}
     srand(time(0));
@@ -27,20 +26,20 @@ int main() {
         cout << "Generando secuencia de tamaño " << N << endl;
 
         for (int c = 1; c <= 5; c++) {
-            c_max = c;
-            
-            // crear tabla de hashing con espacio inicial 1
-            HashTable H;
+        
+            HashTable H; // crear tabla de hashing con espacio inicial 1
+
+            H.c_max = 1;
 
             int inserciones = 0;
             int ios = 0;
             auto start = chrono::high_resolution_clock::now(); // cronómetro
 
             // insertar cada número en la tabla de hash
-            for (element e : secuencia) {
-                insertion(e, H);
+            for (element y : secuencia) {
+                H.insert(y);
                 inserciones++;
-                ios += accesses;
+                ios += H.accesses;
             }
 
             auto end = chrono::high_resolution_clock::now(); // terminar cronómetro
@@ -57,5 +56,26 @@ int main() {
             
         }
     }
+   
     return 0;
 }
+
+/*int main() {
+    HashTable H;
+
+    H.c_max = 1;
+
+    cout << "Espacio en la tabla: " << H.table.size() << " ? " << H.p << endl;
+    cout << "Insertando 1 elemento" << endl;
+    H.insert(675);
+    cout << "Accesos realizados: " << H.accesses << endl;
+    cout << "Espacio en la tabla: " << H.table.size() << " ? " << H.p << endl;
+    cout << "------------------------" << endl;
+    cout << "Insertando otro elemento" << endl;
+    H.insert(263);
+    cout << "------------------------" << endl;
+    cout << "Insertando otro elemento" << endl;
+    H.insert(263);
+
+    return 0;
+}*/
