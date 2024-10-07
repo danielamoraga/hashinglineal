@@ -24,6 +24,11 @@ struct Page {
     Page* overflow = nullptr;  // puntero a la página de desborde
     int size = 0;              // cantidad de elementos en la página y sus desbordes
     int accesses = 0;
+    ~Page() {
+        if (overflow != nullptr) {
+            delete overflow;
+        }
+    }
 
     Page* search(element y) {
         Page* page = this;
@@ -69,7 +74,7 @@ struct Page {
 
     void compactar() {
         vector<element> all_elements = get_elements();
-        elements = {};
+        elements.clear();
         overflow = nullptr;
         for (element y : all_elements) {
             insert(y);
@@ -84,6 +89,12 @@ struct HashTable {
     int t = 0;
     int c_max;
     int accesses = 0;
+
+    ~HashTable() {
+        for (Page* page : table) {
+            delete page;
+        }
+    }
 
     void insert(element y) {
         int k = h(y) % (1 << (t + 1));
@@ -120,6 +131,7 @@ struct HashTable {
         int i = p - (1 << t);
 
         vector<element> redistribute = table[i]->get_elements();
+        delete table[i];
         table[i] = new Page();
 
         for (element y : redistribute) {
