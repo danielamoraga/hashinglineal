@@ -8,7 +8,7 @@ using namespace std;
 #define uint unsigned long long
 #define element long long
 
-int MAX_PAGE_SIZE = 1; // cantidad máxima de elementos en una página
+int MAX_PAGE_SIZE = 128; // cantidad máxima de elementos en una página
 
 /* Función de hashing: devuelve valor aleatorio entre 0 y 2^64 - 1 para cualquier y */
 uint h(element y) {
