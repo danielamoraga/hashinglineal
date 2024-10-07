@@ -1,5 +1,6 @@
 #include "structures.cpp"
 #include <chrono>
+#include <fstream>
 
 // Función para generar un número aleatorio de 64 bits
 element numero_aleatorio_64bits() {
@@ -16,6 +17,8 @@ vector<element> generar_secuencia(uint N) {
 }
 
 int main() {
+    ofstream csv_file("experiment_data.csv");
+    csv_file << "N,c_max,costo_promedio_ios,tiempo_insercion,porcentaje_llenado\n";
 
     // generar secuencia de N números de 64 bits |N| pertenece a {2^10, 2^11, 2^12,...,2^24}
     srand(time(0));
@@ -53,10 +56,13 @@ int main() {
             cout << "Costo promedio de inserción (I/Os): " << costo_promedio << endl;
             cout << "Tiempo total de inserción: " << tiempo.count() << " segundos" << endl;
             cout << "Porcentaje de llenado de las páginas: " << llenado << "%" << endl;
-            
+
+            csv_file << N << "," << c << "," << costo_promedio << "," << tiempo.count() << "," << llenado << "\n";
+
+            csv_file.flush();
         }
     }
-   
+    csv_file.close();
     return 0;
 }
 
