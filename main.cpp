@@ -28,11 +28,11 @@ int main() {
         vector<element> secuencia = generar_secuencia(N);
         cout << "Generando secuencia de tamaño " << N << endl;
 
-        for (int c = 1; c <= 5; c++) {
+        for (int c = 1; c <= 10; c++) {
         
             HashTable H; // crear tabla de hashing con espacio inicial 1
 
-            H.c_max = 1;
+            H.c_max = c;
 
             int inserciones = 0;
             int ios = 0;
@@ -52,6 +52,7 @@ int main() {
             double llenado = H.porcentaje_llenado();
 
             cout << "Resultados para  N = 2^" << i << ":" << endl;
+            cout << "c utilizado: " << c << endl;
             cout << "Cantidad de I/Os: " << ios << endl;
             cout << "Costo promedio de inserción (I/Os): " << costo_promedio << endl;
             cout << "Tiempo total de inserción: " << tiempo.count() << " segundos" << endl;
