@@ -20,13 +20,15 @@ uint h(element y) {
 
 /* Página: Lista de elementos que tiene como máximo 1024 bytes */
 struct Page {
-    vector<element> elements;   // lista de elementos de 64 bits
-    int n;                      // cantidad de elementos en la página
-    unique_ptr<Page> overflow;  // puntero a la página de desborde
+    vector<element> elements;  // List of elements of 64 bits
+    int n;                      // Number of elements in the page
+    unique_ptr<Page> overflow;  // Pointer to the overflow page
 
-    Page() : n(0), overflow(nullptr) {};  // inicializar una página vacía
+    Page() : n(0), overflow(nullptr) {
+        elements.reserve(MAX_PAGE_SIZE);  // Explicitly reserve space for elements
+    };
 
-    // insertar un elemento en la página actual
+    // Insert an element into the current page
     void insert(const element& y) {
         if (n < MAX_PAGE_SIZE) {
             elements.push_back(y);

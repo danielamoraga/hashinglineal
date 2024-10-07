@@ -7,50 +7,48 @@ int c_max;
 
 /* Insertar elemento en la tabla de hashing */
 void insertion(element y, HashTable& H) {
-    int k = h(y) % (1 << (t + 1));  // índice página k
+    int k = h(y) % (1 << (t + 1));  // Calculate page index
+    accesses = 1;
 
+    Page* page = nullptr;
+
+    // Access the correct page
     if (k < p) {
-        // insertar en la página k
-        accesses = 1;
-        Page* page = H.table[k].get();
+        page = H.table[k].get();
         if (page == nullptr) {
-            H.table[k] = make_unique<Page>();  // Inicializar la página si es necesario
+            H.table[k] = make_unique<Page>();
             page = H.table[k].get();
-        }
-
-        while (page != nullptr) {
-            for (element e : page->elements) {
-                if (e == y) {
-                    return;  // elemento ya existe en la página, no se inserta
-                }
+            if (page == nullptr || page->elements.capacity() == 0) {
+                return;
             }
-            page = page->overflow.get();
-            if (page != nullptr) accesses++;  // acceso a página de desborde
         }
-        // si no estaba, salimos del ciclo y podemos insertar
-        H.table[k]->insert(y);  // insertar en la última página de la cadena de desbordes
-        // o en una nueva página si la actual se rebalsa (eso lo hace insert de Page)
-    } else {  // k >= p, significa que la página k aún no ha sido creada
-        // se inserta en la página k - 2^t
-        accesses = 1;
-        Page* page = H.table[k - (1 << t)].get();
+    } else {
+        page = H.table[k - (1 << t)].get();
         if (page == nullptr) {
-            H.table[k - (1 << t)] = make_unique<Page>();  // Inicializar la página si es necesario
+            H.table[k - (1 << t)] = make_unique<Page>();
             page = H.table[k - (1 << t)].get();
-        }
-        while (page != nullptr) {
-            for (element e : page->elements) {
-                if (e == y) {
-                    return;  // elemento ya existe en la página, no se inserta
-                }
+            if (page == nullptr || page->elements.capacity() == 0) {
+                return;
             }
-            page = page->overflow.get();
-            if (page != nullptr) accesses++;  // acceso a página de desborde
         }
+    }
+
+    // Ensure the page has valid capacity
+    if (page->elements.capacity() == 0) {
+        cerr << "ERROR: Page has invalid or zero capacity!" << endl;
+        return;
+    }
+
+    // Insert element into the correct page
+    if (k < p) {
+        H.table[k]->insert(y);
+    } else {
         H.table[k - (1 << t)]->insert(y);
     }
 
+    // Trigger expansion if needed
     if (accesses > c_max) {
-        expand(H, p, t);  // se expande la siguiente página p - 2^t
+        cout << "Expanding hash table..." << endl;
+        expand(H, p, t);
     }
 }

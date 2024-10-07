@@ -55,6 +55,9 @@ int main() {
 
             // Write data to CSV
             csv_file << N << "," << c_max << "," << costo_promedio << "," << tiempo.count() << "," << llenado << "\n";
+
+            // Store data to the .csv file
+            csv_file.flush();
         }
     }
     csv_file.close();
